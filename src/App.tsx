@@ -139,6 +139,7 @@ function App() {
                 label="上傳主角照片"
                 file={userPhoto}
                 onFileChange={setUserPhoto}
+                previewFit="contain"
               />
               <div className="row">
                 <button

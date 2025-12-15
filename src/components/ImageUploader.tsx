@@ -5,6 +5,7 @@ export type ImageUploaderProps = {
   file: File | null
   onFileChange: (file: File | null) => void
   maxSizeBytes?: number
+  previewFit?: 'cover' | 'contain'
 }
 
 const DEFAULT_MAX_SIZE_BYTES = 8 * 1024 * 1024
@@ -20,6 +21,7 @@ function isAllowedImageType(file: File) {
 export function ImageUploader(props: ImageUploaderProps) {
   const { label, file, onFileChange } = props
   const maxSizeBytes = props.maxSizeBytes ?? DEFAULT_MAX_SIZE_BYTES
+  const previewFit = props.previewFit ?? 'cover'
   const [error, setError] = useState<string | null>(null)
 
   const previewUrl = useMemo(() => {
@@ -66,7 +68,11 @@ export function ImageUploader(props: ImageUploaderProps) {
 
       {previewUrl ? (
         <div className="previewWrap">
-          <img className="previewImg" src={previewUrl} alt={`${label} 預覽`} />
+          <img
+            className={previewFit === 'contain' ? 'previewImg previewImgContain' : 'previewImg'}
+            src={previewUrl}
+            alt={`${label} 預覽`}
+          />
         </div>
       ) : (
         <div className="previewEmpty">尚未選擇圖片</div>
