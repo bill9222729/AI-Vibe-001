@@ -40,10 +40,10 @@ app.post('/api/generate', async (req, res) => {
       res.status(400).json({ error: 'Missing companions' })
       return
     }
-    if (body.companions.length > 4) {
+    if (body.companions.length > 5) {
       res
         .status(400)
-        .json({ error: 'Too many companions. Max companions is 4.' })
+        .json({ error: 'Too many companions. Max companions is 5.' })
       return
     }
     for (const c of body.companions) {

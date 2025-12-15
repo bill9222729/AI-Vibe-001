@@ -1,5 +1,5 @@
 import './App.css'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { ImageUploader } from './components/ImageUploader'
 import { CompanionRoster, type Companion } from './components/CompanionRoster'
@@ -13,7 +13,7 @@ import { buildRpgPartyPrompt } from './lib/rpgPrompt'
 
 type StepId = 'hero' | 'roster' | 'party' | 'mission' | 'result'
 
-const MAX_PARTY_COMPANIONS = 3
+const MAX_PARTY_COMPANIONS = 5
 
 function App() {
   const [apiKey, setApiKey] = useState('')
@@ -22,6 +22,7 @@ function App() {
   const [step, setStep] = useState<StepId>('hero')
   const [heroName, setHeroName] = useState('勇者')
   const [userPhoto, setUserPhoto] = useState<File | null>(null)
+  const [heroPreviewUrl, setHeroPreviewUrl] = useState<string | null>(null)
   const [companions, setCompanions] = useState<Companion[]>([])
   const [partyIds, setPartyIds] = useState<string[]>([])
   const [missionId, setMissionId] = useState<MissionId>(MISSIONS[0].id)
@@ -41,6 +42,16 @@ function App() {
   )
 
   const canGenerate = userPhoto != null && party.length > 0 && !isGenerating
+
+  useEffect(() => {
+    // Cleanup blob URLs when leaving the page.
+    return () => {
+      if (heroPreviewUrl) URL.revokeObjectURL(heroPreviewUrl)
+      for (const c of companions) URL.revokeObjectURL(c.previewUrl)
+    }
+    // Intentionally run only on unmount.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="page">
@@ -138,7 +149,13 @@ function App() {
               <ImageUploader
                 label="上傳主角照片"
                 file={userPhoto}
-                onFileChange={setUserPhoto}
+                previewUrl={heroPreviewUrl}
+                onFileChange={(file) => {
+                  setError(null)
+                  if (heroPreviewUrl) URL.revokeObjectURL(heroPreviewUrl)
+                  setUserPhoto(file)
+                  setHeroPreviewUrl(file ? URL.createObjectURL(file) : null)
+                }}
                 previewFit="contain"
               />
               <div className="row">
@@ -167,13 +184,22 @@ function App() {
                         typeof crypto !== 'undefined' && 'randomUUID' in crypto
                           ? crypto.randomUUID()
                           : `${Date.now()}-${Math.random()}`
-                      next.push({ id, name: '', file: f })
+                      next.push({
+                        id,
+                        name: '',
+                        file: f,
+                        previewUrl: URL.createObjectURL(f),
+                      })
                     }
                     return next
                   })
                 }}
                 onRemove={(id) => {
-                  setCompanions((prev) => prev.filter((c) => c.id !== id))
+                  setCompanions((prev) => {
+                    const target = prev.find((c) => c.id === id)
+                    if (target) URL.revokeObjectURL(target.previewUrl)
+                    return prev.filter((c) => c.id !== id)
+                  })
                   setPartyIds((prev) => prev.filter((x) => x !== id))
                 }}
                 onRename={(id, name) => {

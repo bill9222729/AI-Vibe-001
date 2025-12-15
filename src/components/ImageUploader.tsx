@@ -6,6 +6,7 @@ export type ImageUploaderProps = {
   onFileChange: (file: File | null) => void
   maxSizeBytes?: number
   previewFit?: 'cover' | 'contain'
+  previewUrl?: string | null
 }
 
 const DEFAULT_MAX_SIZE_BYTES = 8 * 1024 * 1024
@@ -22,18 +23,23 @@ export function ImageUploader(props: ImageUploaderProps) {
   const { label, file, onFileChange } = props
   const maxSizeBytes = props.maxSizeBytes ?? DEFAULT_MAX_SIZE_BYTES
   const previewFit = props.previewFit ?? 'cover'
+  const externalPreviewUrl = props.previewUrl ?? null
   const [error, setError] = useState<string | null>(null)
 
-  const previewUrl = useMemo(() => {
+  const internalPreviewUrl = useMemo(() => {
     if (!file) return null
+    if (externalPreviewUrl) return null
     return URL.createObjectURL(file)
-  }, [file])
+  }, [file, externalPreviewUrl])
+
+  const previewUrl = externalPreviewUrl ?? internalPreviewUrl
 
   useEffect(() => {
     return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl)
+      // Only revoke URLs created by this component.
+      if (internalPreviewUrl) URL.revokeObjectURL(internalPreviewUrl)
     }
-  }, [previewUrl])
+  }, [internalPreviewUrl])
 
   return (
     <div className="uploader">

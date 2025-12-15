@@ -14,7 +14,8 @@ export function buildRpgPartyPrompt(params: BuildRpgPromptParams): string {
       : heroName
 
   return [
-    'You are generating a single photorealistic travel photo in an RPG quest style.',
+    'You are generating a single photorealistic cinematic RPG quest scene (NOT an illustration).',
+    'The result should feel like a screenshot from a modern RPG game, but still look like a real camera photo.',
     '',
     'Use the provided reference photos as the exact identities of the people in the final image:',
     '- The FIRST image is the HERO.',
@@ -23,6 +24,12 @@ export function buildRpgPartyPrompt(params: BuildRpgPromptParams): string {
     '- Everyone must appear together in the same frame.',
     '- Do NOT add extra people.',
     '- Natural proportions, realistic skin tones, realistic lighting and shadows.',
+    '',
+    'RPG theme requirements:',
+    '- The party are adventurers on a quest in a real-world location.',
+    '- Add subtle RPG vibes via outfits, props, and posture (e.g., travel satchel, map, small charm, utility belt).',
+    '- Keep it tasteful and believable for the location (no exaggerated fantasy armor unless it still matches the scene).',
+    '- No UI overlay, no subtitles, no text, no logos, no watermarks in the image.',
     '',
     `QuestTitle: ${mission.title}`,
     `Party: ${partyLine}`,
@@ -34,11 +41,13 @@ export function buildRpgPartyPrompt(params: BuildRpgPromptParams): string {
     'Wardrobe & styling:',
     mission.wardrobePrompt,
     'Ensure the whole party looks coherent together and matches the scene weather/time.',
+    'Give each person a distinct but compatible RPG archetype vibe (e.g., leader/scout/mage) expressed through subtle styling.',
     '',
     'Composition:',
     '- Group photo: medium shot (waist-up) or full-body, everyone visible and in focus.',
     '- Background recognizable but not distracting.',
-    '- High detail, high resolution, realistic camera look.',
+    '- High detail, high resolution, realistic camera look (35mm / full-frame).',
+    '- Cinematic depth of field, natural motion, authentic candid moment.',
   ].join('\n')
 }
 

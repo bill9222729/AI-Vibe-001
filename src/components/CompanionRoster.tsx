@@ -1,9 +1,8 @@
-import { useEffect, useMemo } from 'react'
-
 export type Companion = {
   id: string
   name: string
   file: File
+  previewUrl: string
 }
 
 export type CompanionRosterProps = {
@@ -27,16 +26,6 @@ function isAllowedImageType(file: File) {
 export function CompanionRoster(props: CompanionRosterProps) {
   const { companions, onAddFiles, onRemove, onRename } = props
   const maxSizeBytes = props.maxSizeBytes ?? DEFAULT_MAX_SIZE_BYTES
-
-  const previews = useMemo(() => {
-    return companions.map((c) => ({ id: c.id, url: URL.createObjectURL(c.file) }))
-  }, [companions])
-
-  useEffect(() => {
-    return () => {
-      for (const p of previews) URL.revokeObjectURL(p.url)
-    }
-  }, [previews])
 
   return (
     <div className="roster">
@@ -66,12 +55,13 @@ export function CompanionRoster(props: CompanionRosterProps) {
       ) : (
         <div className="rosterGrid">
           {companions.map((c) => {
-            const p = previews.find((x) => x.id === c.id)
             return (
               <div key={c.id} className="rosterCard">
-                {p ? (
-                  <img className="rosterImg" src={p.url} alt={c.name || '夥伴'} />
-                ) : null}
+                <img
+                  className="rosterImg"
+                  src={c.previewUrl}
+                  alt={c.name || '夥伴'}
+                />
                 <input
                   className="input"
                   value={c.name}
