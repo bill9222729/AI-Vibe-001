@@ -16,6 +16,7 @@
   margin: 0;
   font-size: 28px;
   line-height: 1.2;
+  letter-spacing: 0.3px;
 }
 
 .subtitle {
@@ -24,17 +25,146 @@
   line-height: 1.4;
 }
 
-.grid {
+.layout {
   display: grid;
+  gap: 16px;
   grid-template-columns: 1fr;
+}
+
+@media (min-width: 980px) {
+  .layout {
+    grid-template-columns: 340px 1fr;
+    align-items: start;
+  }
+}
+
+.hud {
+  display: grid;
+  gap: 14px;
+}
+
+.content {
+  display: grid;
   gap: 16px;
 }
 
 .card {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 16px;
+  position: relative;
+  border: 1px solid rgba(240, 210, 140, 0.18);
+  border-radius: 18px;
   padding: 16px;
-  background: rgba(255, 255, 255, 0.04);
+  background:
+    linear-gradient(180deg, rgba(22, 18, 10, 0.78), rgba(12, 10, 6, 0.78));
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 223, 144, 0.35),
+    rgba(100, 108, 255, 0.12),
+    rgba(255, 223, 144, 0.18)
+  );
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.panelTitle {
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  font-size: 12px;
+  color: rgba(255, 220, 150, 0.92);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.hudRow {
+  display: grid;
+  grid-template-columns: 86px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.portraitFrame {
+  width: 86px;
+  height: 86px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 223, 144, 0.18);
+  background: rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.portraitImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.portraitEmpty {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12px;
+}
+
+.hudMeta {
+  display: grid;
+  gap: 6px;
+}
+
+.hudName {
+  font-weight: 900;
+  letter-spacing: 0.4px;
+}
+
+.hudSub {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.35;
+}
+
+.hudList {
+  display: grid;
+  gap: 8px;
+}
+
+.hudLine {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 8px;
+  line-height: 1.4;
+  font-size: 13px;
+}
+
+.hudKey {
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.hudVal {
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.hudHint {
+  margin-top: 6px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
+  line-height: 1.35;
 }
 
 .cardTitle {
@@ -69,18 +199,23 @@
 }
 
 .stepChip {
-  border-radius: 999px;
+  border-radius: 14px;
   padding: 8px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(0, 0, 0, 0.12);
-  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 223, 144, 0.18);
+  background: rgba(0, 0, 0, 0.22);
+  color: rgba(255, 243, 220, 0.92);
   cursor: pointer;
-  font-weight: 700;
+  font-weight: 900;
+  letter-spacing: 0.3px;
 }
 
 .stepChipActive {
-  border-color: rgba(100, 108, 255, 0.6);
-  background: rgba(100, 108, 255, 0.16);
+  border-color: rgba(255, 223, 144, 0.42);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 223, 144, 0.18),
+    rgba(100, 108, 255, 0.08)
+  );
 }
 
 .stepBody {
@@ -103,10 +238,15 @@
   width: 100%;
   padding: 10px 12px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(0, 0, 0, 0.18);
-  color: white;
+  border: 1px solid rgba(255, 223, 144, 0.16);
+  background: rgba(0, 0, 0, 0.22);
+  color: rgba(255, 255, 255, 0.92);
   outline: none;
+}
+
+.input:focus {
+  border-color: rgba(255, 223, 144, 0.38);
+  box-shadow: 0 0 0 3px rgba(255, 223, 144, 0.08);
 }
 
 .apiKeyRow {
@@ -121,13 +261,17 @@
   border-radius: 12px;
   padding: 10px 14px;
   border: 1px solid transparent;
-  font-weight: 600;
+  font-weight: 900;
   cursor: pointer;
 }
 
 .buttonPrimary {
-  background: #646cff;
-  color: white;
+  background: linear-gradient(180deg, #f3d99b, #b57a22);
+  color: rgba(20, 12, 4, 0.95);
+  border-color: rgba(255, 223, 144, 0.25);
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .buttonPrimary:disabled {
@@ -136,9 +280,9 @@
 }
 
 .buttonSecondary {
-  background: rgba(255, 255, 255, 0.08);
-  color: white;
-  border-color: rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.22);
+  color: rgba(255, 243, 220, 0.92);
+  border-color: rgba(255, 223, 144, 0.16);
 }
 
 .hint {
@@ -291,16 +435,20 @@
 .missionCard {
   text-align: left;
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(255, 223, 144, 0.16);
+  background: rgba(0, 0, 0, 0.22);
   padding: 12px;
   cursor: pointer;
   color: rgba(255, 255, 255, 0.9);
 }
 
 .missionCardActive {
-  border-color: rgba(100, 108, 255, 0.6);
-  background: rgba(100, 108, 255, 0.16);
+  border-color: rgba(255, 223, 144, 0.42);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 223, 144, 0.18),
+    rgba(100, 108, 255, 0.08)
+  );
 }
 
 .missionTitle {
@@ -331,8 +479,8 @@
   display: grid;
   gap: 10px;
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(255, 223, 144, 0.16);
+  background: rgba(0, 0, 0, 0.22);
   padding: 10px;
 }
 
@@ -356,8 +504,8 @@
   gap: 10px;
   padding: 10px 12px;
   border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(255, 223, 144, 0.16);
+  background: rgba(0, 0, 0, 0.22);
   cursor: pointer;
 }
 
@@ -372,8 +520,8 @@
 
 .questSummary {
   border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(255, 223, 144, 0.16);
+  background: rgba(0, 0, 0, 0.22);
   padding: 12px;
 }
 

@@ -64,12 +64,63 @@ function App() {
         </div>
       </header>
 
-      <main className="grid">
-        <section className="card">
-          <h2 className="cardTitle">設定：API Key</h2>
-          <div className="row">
+      <main className="layout">
+        <aside className="hud">
+          <section className="panel">
+            <div className="panelTitle">角色狀態</div>
+            <div className="hudRow">
+              <div className="portraitFrame">
+                {heroPreviewUrl ? (
+                  <img className="portraitImg" src={heroPreviewUrl} alt="主角頭像" />
+                ) : (
+                  <div className="portraitEmpty">尚未建立</div>
+                )}
+              </div>
+              <div className="hudMeta">
+                <div className="hudName">{heroName || '勇者'}</div>
+                <div className="hudSub">
+                  {userPhoto ? '主角已就位' : '上傳主角照片以開始'}
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section className="panel">
+            <div className="panelTitle">隊伍</div>
+            <div className="hudList">
+              <div className="hudLine">
+                <span className="hudKey">名冊：</span>
+                <span className="hudVal">{companions.length} 位</span>
+              </div>
+              <div className="hudLine">
+                <span className="hudKey">出隊：</span>
+                <span className="hudVal">
+                  {party.length === 0
+                    ? '尚未選擇'
+                    : party.map((c) => c.name || '未命名夥伴').join('、')}
+                </span>
+              </div>
+              <div className="hudHint">
+                本次最多可出隊 {MAX_PARTY_COMPANIONS} 位夥伴
+              </div>
+            </div>
+          </section>
+
+          <section className="panel">
+            <div className="panelTitle">任務</div>
+            <div className="hudList">
+              <div className="hudLine">
+                <span className="hudKey">目前：</span>
+                <span className="hudVal">{selectedMission.title}</span>
+              </div>
+              <div className="hudSub">{selectedMission.subtitle}</div>
+            </div>
+          </section>
+
+          <section className="panel">
+            <div className="panelTitle">祕法設定</div>
             <label className="label" htmlFor="apiKey">
-              Gemini API Key（可留空：若你的本機 API 有設 GEMINI_API_KEY，就會用後端環境變數）
+              Gemini API Key（可留空：本機 API 若有設 GEMINI_API_KEY，會用後端環境變數）
             </label>
             <div className="apiKeyRow">
               <input
@@ -90,10 +141,14 @@ function App() {
                 {showApiKey ? '隱藏' : '顯示'}
               </button>
             </div>
-          </div>
-        </section>
+            <div className="hudHint">
+              建議用環境變數設定 API Key（較安全），前端可留空。
+            </div>
+          </section>
+        </aside>
 
-        <section className="card">
+        <section className="content">
+          <section className="card book">
           <div className="stepBar">
             <button
               type="button"
@@ -382,11 +437,12 @@ function App() {
               {error ? <div className="errorBox">{error}</div> : null}
             </div>
           ) : null}
-        </section>
+          </section>
 
-        <section className="card">
-          <h2 className="cardTitle">結果預覽</h2>
-          <ResultPanel dataUrl={resultDataUrl} />
+          <section className="card panel">
+            <h2 className="cardTitle">結果預覽</h2>
+            <ResultPanel dataUrl={resultDataUrl} />
+          </section>
         </section>
       </main>
 
