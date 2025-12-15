@@ -4,7 +4,7 @@ export type GenerateTwoPersonSceneParams = {
   apiKey: string
   prompt: string
   userImage: Base64Image
-  buddyImage: Base64Image
+  companions: Base64Image[]
   model?: string
 }
 
@@ -16,7 +16,7 @@ export type GeneratedImage = {
 export async function generateTwoPersonSceneImage(
   params: GenerateTwoPersonSceneParams,
 ): Promise<GeneratedImage> {
-  const { apiKey, prompt, userImage, buddyImage } = params
+  const { apiKey, prompt, userImage, companions } = params
   const model = params.model ?? 'gemini-3-pro-image-preview'
 
   let resp: Response
@@ -29,7 +29,7 @@ export async function generateTwoPersonSceneImage(
         prompt,
         model,
         userImage,
-        buddyImage,
+        companions,
       }),
     })
   } catch (e) {

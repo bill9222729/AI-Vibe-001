@@ -12,7 +12,7 @@ type GenerateRequestBody = {
   prompt: string
   model?: string
   userImage: Base64Image
-  buddyImage: Base64Image
+  companions: Base64Image[]
 }
 
 const app = express()
@@ -36,9 +36,21 @@ app.post('/api/generate', async (req, res) => {
       res.status(400).json({ error: 'Missing userImage' })
       return
     }
-    if (!body.buddyImage?.base64 || !body.buddyImage?.mimeType) {
-      res.status(400).json({ error: 'Missing buddyImage' })
+    if (!Array.isArray(body.companions) || body.companions.length === 0) {
+      res.status(400).json({ error: 'Missing companions' })
       return
+    }
+    if (body.companions.length > 4) {
+      res
+        .status(400)
+        .json({ error: 'Too many companions. Max companions is 4.' })
+      return
+    }
+    for (const c of body.companions) {
+      if (!c?.base64 || !c?.mimeType) {
+        res.status(400).json({ error: 'Invalid companions item' })
+        return
+      }
     }
 
     const apiKey = (body.apiKey ?? process.env.GEMINI_API_KEY ?? '').trim()
@@ -62,11 +74,11 @@ app.post('/api/generate', async (req, res) => {
           data: body.userImage.base64,
           mime_type: body.userImage.mimeType,
         },
-        {
-          type: 'image',
-          data: body.buddyImage.base64,
-          mime_type: body.buddyImage.mimeType,
-        },
+        ...body.companions.map((img) => ({
+          type: 'image' as const,
+          data: img.base64,
+          mime_type: img.mimeType,
+        })),
       ],
       response_modalities: ['image'],
     })
